@@ -12,6 +12,10 @@ from rest_framework.views import APIView
 from MyApps.productos.models import Producto, TipoProducto
 from MyApps.productos.serializers import ProductoSerializer, TipoProductoSerializer
 
+#CONSULTAS
+from rest_framework.decorators import api_view
+from django.db.models import Q
+
 # Create your views here.
 
 def home(request):
@@ -116,7 +120,9 @@ class ProductoDetail(APIView):
         producto = self.get_object(pk)
         producto.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
+
+ #Consultas avanzadas realizadas en clase:    
 class ProductoConTipoList(APIView):
 
     def get(self, request, format=None):
@@ -127,3 +133,22 @@ class ProductoConTipoList(APIView):
             'id', 'nombre', 'marca', 'precio','stockmin', 'cantidad'
         )
         return JsonResponse(list(productos), safe=False)
+
+
+@api_view(['GET'])
+def get_productos_with_tipoproducto(request):
+
+    producto = Producto.objects.all()
+    #serializador 
+    serializer = ProductoSerializer(producto, many=True)
+   
+    #Q(marca__icontains="Onela-Parker")
+
+    """ producto = Producto.objects.filter(
+        Q(cantidad__gte=80) 
+    )
+    #serializador 
+    serializer = ProductoSerializer(producto, many=True) """
+
+    return Response(serializer.data) 
+

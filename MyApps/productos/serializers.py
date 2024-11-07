@@ -11,6 +11,9 @@ class TipoProductoSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class ProductoSerializer(serializers.ModelSerializer):
+    tipoproducto = TipoProductoSerializer()
     class Meta:
         model = Producto
         fields = "__all__"
+      
+        
